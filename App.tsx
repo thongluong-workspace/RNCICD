@@ -9,7 +9,7 @@ import React from 'react';
 import type {PropsWithChildren} from 'react';
 import { 
   ScrollView,
-  StatusBar,
+  StatusBar, 
   StyleSheet,   
   Text,
   useColorScheme,
