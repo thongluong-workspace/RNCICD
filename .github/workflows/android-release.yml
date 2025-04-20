@@ -1,0 +1,50 @@
+name: Build & Distribute Staging APK
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  build:
+    if: contains(github.event.head_commit.message, '[ci-build]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install 
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.MYAPP_UPLOAD_STORE_FILE_BASE64 }}" | base64 -d > android/app/my-upload-key.keystore
+
+      - name: Set environment variables
+        run: |
+          echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Build Staging Release APK
+        run: npm run androi:release
+
+      - name: Upload to Firebase App Distribution
+        run: |
+          npm install -g firebase-tools
+          firebase appdistribution:distribute android/app/build/outputs/apk/release/app-release.apk \
+            --app "${{ secrets.FIREBASE_APP_ID }}" \
+            --token "${{ secrets.FIREBASE_TOKEN }}" \
+            --groups "Tester"
