@@ -30,10 +30,11 @@ jobs:
 
       - name: Decode keystore
         run: |
-          echo "${{ secrets.MYAPP_UPLOAD_STORE_FILE_BASE64 }}" | base64 -d > android/app/my-upload-key.keystore
+          echo "${{ secrets.MYAPP_UPLOAD_STORE_FILE_BASE64 }}" | base64 -d > android/app/${{ secrets.MYAPP_UPLOAD_STORE_FILE }}
 
       - name: Set environment variables
         run: |
+          echo "MYAPP_UPLOAD_STORE_FILE=${{ secrets.MYAPP_UPLOAD_STORE_FILE }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.MYAPP_UPLOAD_STORE_PASSWORD }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.MYAPP_UPLOAD_KEY_ALIAS }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}" >> $GITHUB_ENV
