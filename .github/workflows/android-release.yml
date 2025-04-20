@@ -39,7 +39,7 @@ jobs:
           echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.MYAPP_UPLOAD_KEY_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Build Staging Release APK
-        run: npm run androi:release
+        run: npm run android:release
 
       - name: Upload to Firebase App Distribution
         run: |
