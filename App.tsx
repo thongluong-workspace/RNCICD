@@ -10,7 +10,7 @@ import type {PropsWithChildren} from 'react';
 import { 
   ScrollView,
   StatusBar,
-  StyleSheet, 
+  StyleSheet,   
   Text,
   useColorScheme,
   View,
